@@ -1,16 +1,12 @@
 import { type NextRequest, NextResponse } from "next/server"
-
-// In-memory storage for demo purposes
-// In production, you would use a proper database
-const contactMessages: any[] = []
-let messageIdCounter = 1
+import { dataStore } from "@/lib/data-store"
 
 export async function POST(request: NextRequest) {
   try {
     const data = await request.json()
 
     const message = {
-      id: messageIdCounter++,
+      id: dataStore.counters.contactMessageId++,
       name: data.name,
       email: data.email,
       company: data.company,
@@ -21,7 +17,7 @@ export async function POST(request: NextRequest) {
       created_at: new Date().toISOString(),
     }
 
-    contactMessages.push(message)
+    dataStore.contactMessages.push(message)
 
     return NextResponse.json(
       {
@@ -46,12 +42,12 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url)
     const filter = searchParams.get("filter") || "all"
 
-    let filteredMessages = contactMessages
+    let filteredMessages = dataStore.contactMessages
 
     if (filter === "read") {
-      filteredMessages = contactMessages.filter((msg) => msg.is_read)
+      filteredMessages = dataStore.contactMessages.filter((msg) => msg.is_read)
     } else if (filter === "unread") {
-      filteredMessages = contactMessages.filter((msg) => !msg.is_read)
+      filteredMessages = dataStore.contactMessages.filter((msg) => !msg.is_read)
     }
 
     return NextResponse.json({

@@ -1,14 +1,12 @@
 import { type NextRequest, NextResponse } from "next/server"
-
-const callbackRequests: any[] = []
-let callbackIdCounter = 1
+import { dataStore } from "@/lib/data-store"
 
 export async function POST(request: NextRequest) {
   try {
     const data = await request.json()
 
     const callback = {
-      id: callbackIdCounter++,
+      id: dataStore.counters.callbackRequestId++,
       name: data.name,
       phone: data.phone,
       preferred_time: data.preferred_time,
@@ -17,7 +15,7 @@ export async function POST(request: NextRequest) {
       created_at: new Date().toISOString(),
     }
 
-    callbackRequests.push(callback)
+    dataStore.callbackRequests.push(callback)
 
     return NextResponse.json(
       {
@@ -42,12 +40,12 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url)
     const filter = searchParams.get("filter") || "all"
 
-    let filteredCallbacks = callbackRequests
+    let filteredCallbacks = dataStore.callbackRequests
 
     if (filter === "read") {
-      filteredCallbacks = callbackRequests.filter((cb) => cb.is_read)
+      filteredCallbacks = dataStore.callbackRequests.filter((cb) => cb.is_read)
     } else if (filter === "unread") {
-      filteredCallbacks = callbackRequests.filter((cb) => !cb.is_read)
+      filteredCallbacks = dataStore.callbackRequests.filter((cb) => !cb.is_read)
     }
 
     return NextResponse.json({

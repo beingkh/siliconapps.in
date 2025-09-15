@@ -1,18 +1,14 @@
 import { NextResponse } from "next/server"
-
-// Import storage arrays (in production, these would be database queries)
-const contactMessages: any[] = []
-const callbackRequests: any[] = []
-const projectRequests: any[] = []
+import { dataStore } from "@/lib/data-store"
 
 export async function GET() {
   try {
-    const totalMessages = contactMessages.length
-    const unreadMessages = contactMessages.filter((msg) => !msg.is_read).length
-    const totalCallbacks = callbackRequests.length
-    const unreadCallbacks = callbackRequests.filter((cb) => !cb.is_read).length
-    const totalProjects = projectRequests.length
-    const unreadProjects = projectRequests.filter((proj) => !proj.is_read).length
+    const totalMessages = dataStore.contactMessages.length
+    const unreadMessages = dataStore.contactMessages.filter((msg) => !msg.is_read).length
+    const totalCallbacks = dataStore.callbackRequests.length
+    const unreadCallbacks = dataStore.callbackRequests.filter((cb) => !cb.is_read).length
+    const totalProjects = dataStore.projectRequests.length
+    const unreadProjects = dataStore.projectRequests.filter((proj) => !proj.is_read).length
 
     return NextResponse.json({
       success: true,

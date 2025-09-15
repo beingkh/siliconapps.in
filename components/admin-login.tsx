@@ -22,8 +22,7 @@ export function AdminLogin() {
     setIsLoading(true)
     setError("")
 
-    // Simple demo authentication - in production, use proper auth
-    if (username === "admin" && password === "admin123") {
+    if (username === "siliconapps" && password === "Rakesh@2025") {
       // Set a simple session flag in localStorage for demo
       localStorage.setItem("admin_authenticated", "true")
       router.push("/admin/dashboard")
@@ -80,8 +79,6 @@ export function AdminLogin() {
               Home
             </Button>
           </Link>
-
-          <div className="text-center text-sm text-muted-foreground">Demo: admin / admin123</div>
         </form>
       </CardContent>
     </Card>

@@ -1,14 +1,12 @@
 import { type NextRequest, NextResponse } from "next/server"
-
-const projectRequests: any[] = []
-let projectIdCounter = 1
+import { dataStore } from "@/lib/data-store"
 
 export async function POST(request: NextRequest) {
   try {
     const data = await request.json()
 
     const project = {
-      id: projectIdCounter++,
+      id: dataStore.counters.projectRequestId++,
       name: data.name,
       email: data.email,
       company: data.company,
@@ -24,7 +22,7 @@ export async function POST(request: NextRequest) {
       created_at: new Date().toISOString(),
     }
 
-    projectRequests.push(project)
+    dataStore.projectRequests.push(project)
 
     return NextResponse.json(
       {
@@ -49,12 +47,12 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url)
     const filter = searchParams.get("filter") || "all"
 
-    let filteredProjects = projectRequests
+    let filteredProjects = dataStore.projectRequests
 
     if (filter === "read") {
-      filteredProjects = projectRequests.filter((proj) => proj.is_read)
+      filteredProjects = dataStore.projectRequests.filter((proj) => proj.is_read)
     } else if (filter === "unread") {
-      filteredProjects = projectRequests.filter((proj) => !proj.is_read)
+      filteredProjects = dataStore.projectRequests.filter((proj) => !proj.is_read)
     }
 
     return NextResponse.json({

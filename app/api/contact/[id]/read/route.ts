@@ -1,13 +1,10 @@
 import { type NextRequest, NextResponse } from "next/server"
-
-// Import the same storage from the main contact route
-// In production, this would be a database query
-const contactMessages: any[] = []
+import { dataStore } from "@/lib/data-store"
 
 export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     const messageId = Number.parseInt(params.id)
-    const messageIndex = contactMessages.findIndex((msg) => msg.id === messageId)
+    const messageIndex = dataStore.contactMessages.findIndex((msg) => msg.id === messageId)
 
     if (messageIndex === -1) {
       return NextResponse.json(
@@ -19,7 +16,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
       )
     }
 
-    contactMessages[messageIndex].is_read = true
+    dataStore.contactMessages[messageIndex].is_read = true
 
     return NextResponse.json({
       success: true,
